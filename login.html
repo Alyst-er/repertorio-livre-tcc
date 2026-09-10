@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acesso | Repertório Livre</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .auth-wrap{min-height:calc(100vh - 80px);display:grid;place-items:center;padding:50px 0}.auth-card{width:min(460px,100%);padding:30px}.auth-card h1{font-size:34px;margin:10px 0}.auth-tabs{display:flex;gap:6px;margin:20px 0}.auth-tabs button{flex:1}.auth-error{color:#ef8c86;font-size:12px;min-height:20px}.auth-note{color:var(--muted);font-size:12px;line-height:1.6}
+  </style>
+</head>
+<body>
+<header class="topbar"><div class="container nav"><a class="brand" href="index.html"><span class="mark">RL</span><span><strong>Repertório Livre</strong><small>Plataforma para músicos e bandas</small></span></a><a class="button small" href="index.html">Voltar ao site</a></div></header>
+<main class="auth-wrap"><section class="panel auth-card"><span class="eyebrow">Conta colaborativa</span><h1 id="title">Entrar na plataforma</h1><p class="auth-note">A conta permite sincronizar repertórios, compartilhar com integrantes e acessar os dados em outros dispositivos.</p><div class="auth-tabs"><button class="button primary" id="login-tab">Entrar</button><button class="button" id="register-tab">Criar conta</button></div><form id="auth-form" class="form"><label id="name-wrap" class="hidden">Nome completo<input name="name" autocomplete="name"></label><label>E-mail<input name="email" type="email" required autocomplete="email"></label><label>Senha<input name="password" type="password" required minlength="6" autocomplete="current-password"></label><p id="auth-error" class="auth-error"></p><button class="button primary full" type="submit" id="submit">Entrar</button></form></section></main>
+<script>
+(() => { const form=document.getElementById('auth-form'), nameWrap=document.getElementById('name-wrap'), title=document.getElementById('title'), submit=document.getElementById('submit'), error=document.getElementById('auth-error'), loginTab=document.getElementById('login-tab'), registerTab=document.getElementById('register-tab'); let mode='login'; function setMode(next){mode=next; const register=mode==='register'; nameWrap.classList.toggle('hidden',!register); nameWrap.querySelector('input').required=register; title.textContent=register?'Criar conta':'Entrar na plataforma'; submit.textContent=register?'Criar conta':'Entrar'; loginTab.classList.toggle('primary',!register); registerTab.classList.toggle('primary',register); error.textContent='';} loginTab.onclick=()=>setMode('login'); registerTab.onclick=()=>setMode('register'); form.onsubmit=async(e)=>{e.preventDefault(); error.textContent=''; const data=Object.fromEntries(new FormData(form)); try{const response=await fetch(`/api/auth/${mode}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}); const result=await response.json(); if(!response.ok) throw new Error(result.error||'Não foi possível concluir.'); location.href='index.html';}catch(err){error.textContent=err.message;}}; })();
+</script>
+</body>
+</html>
